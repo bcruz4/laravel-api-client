@@ -352,114 +352,82 @@
                 Swal.fire({
                     title: 'Campo requerido',
                     text: 'Por favor ingrese un número de documento válido',
-                    icon: 'warning',
-                    confirmButtonText: 'Entendido',
-                    background: 'white',
-                    backdrop: `
-                        rgba(0,0,0,0.4)
-                        url("{{ asset('img/logo.jpg') }}")
-                        center left
-                        no-repeat
-                    `
+                    icon: 'warning'
                 });
                 return;
             }
 
             const btnSubmit = this.querySelector('button[type="submit"]');
             const originalBtnText = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Verificando...';
+            btnSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Consultando...';
             btnSubmit.disabled = true;
 
             try {
+                // 1. Primero hacemos la petición a Laravel
                 const response = await fetch('/buscar', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
                         documento
                     })
                 });
 
+                // 2. Verificamos si la respuesta es OK
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+
+                // 3. Obtenemos los datos JSON
                 const data = await response.json();
 
+                // 4. Verificamos si la consulta fue exitosa
                 if (data.success) {
                     document.getElementById('floatingFormContainer').style.display = 'none';
-                    document.getElementById('documento').value = '';
 
                     Swal.fire({
-                        // title: 'Resultado de Consulta',
                         html: `
-                            <div class="result-container">
-                                <div class="greeting">
-                                    <i class="fa fa-hand-paper-o"></i> ¡Hola, ${data.nombre_completo}!
-                                </div>
-                                
-                                <div class="item-card">
-                                    <span class="item-label">Su nuevo número de ítem es:</span>
-                                    <div class="item-value pulse-animation">${data.item}</div>
-                                    <div class="user-name">
-                                        <i class="fa fa-user-circle-o"></i> ${data.nombre_completo}
-                                    </div>
-                                </div>
-                                
-                                <div class="verification-text">
-                                    <i class="fa fa-check-circle verification-icon"></i> 
-                                    Verificación completada - Documento: ${documento}
-                                </div>
-                                
-                                <div class="document-info">
-                                    <i class="fa fa-info-circle"></i> Por favor verifique que sus datos sean correctos. 
-                                    Si encuentra alguna discrepancia, contacte al departamento de Recursos Humanos.
-                                </div>
+                    <div class="result-container">
+                        <div class="greeting">
+                            <i class="fa fa-hand-paper-o"></i> ¡Hola, ${data.nombre_completo}!
+                        </div>
+                        <div class="item-card">
+                            <span class="item-label">Su nuevo número de ítem es:</span>
+                            <div class="item-value pulse-animation">${data.item}</div>
+                            <div class="user-name">
+                                <i class="fa fa-user-circle-o"></i> ${data.nombre_completo}
                             </div>
-                        `,
-                        icon: 'success',
+                        </div>
+                        <div class="verification-text">
+                            <i class="fa fa-check-circle verification-icon"></i> 
+                            Documento consultado: ${documento}
+                        </div>
+                    </div>
+                `,
                         confirmButtonText: 'Aceptar',
-                        showConfirmButton: true,
-                        showCloseButton: true,
-                        customClass: {
-                            container: 'animate__animated animate__fadeIn',
-                            popup: 'animate__animated animate__zoomIn'
-                        },
-                        width: '650px',
-                        padding: '0',
                         background: 'white',
-                        backdrop: `
-                            rgba(0,0,0,0.4)
-                            center left
-                            no-repeat
-                        `
+                        width: '650px'
                     });
                 } else {
                     Swal.fire({
-                        title: 'Documento no encontrado',
-                        html: `
-                            <div style="text-align: center; padding: 20px;">
-                                <i class="fa fa-exclamation-triangle" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 15px;"></i>
-                                <p>El número de documento <strong>${documento}</strong> no está registrado en nuestro sistema.</p>
-                                <div class="alert alert-warning" style="font-size: 0.9rem;">
-                                    Verifique que haya ingresado correctamente el número o contacte al departamento de Recursos Humanos si cree que esto es un error.
-                                </div>
-                            </div>
-                        `,
-                        icon: 'error',
-                        confirmButtonText: 'Intentar nuevamente',
-                        background: 'white'
+                        title: 'No encontrado',
+                        text: data.error || 'El documento no está registrado',
+                        icon: 'error'
                     });
                 }
             } catch (error) {
+                console.error('Error:', error);
                 Swal.fire({
-                    title: 'Error de conexión',
-                    text: 'No se pudo conectar con el servidor. Por favor intente más tarde.',
-                    icon: 'error',
-                    confirmButtonText: 'Entendido',
-                    background: 'white'
+                    title: 'Error',
+                    text: 'Ocurrió un error al realizar la consulta',
+                    icon: 'error'
                 });
             } finally {
                 btnSubmit.innerHTML = originalBtnText;
                 btnSubmit.disabled = false;
+                document.getElementById('documento').value = '';
             }
         });
 

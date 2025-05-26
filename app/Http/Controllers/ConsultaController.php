@@ -14,23 +14,26 @@ class ConsultaController extends Controller
 
     public function buscar(Request $request)
     {
-        $documento = $request->input('documento');
+        $request->validate(['documento' => 'required']);
 
         try {
-            $response = Http::get("http://localhost:3000/buscar/{$documento}");
+            $response = Http::withHeaders([
+                'X-API-Key' => env('API_NODE_KEY')
+            ])->get(env('API_NODE_URL') . '/buscar/' . $request->documento);
 
             if ($response->successful()) {
-                $data = $response->json();
-                return response()->json([
-                    'success' => true,
-                    'item' => $data['item'],
-                    'nombre_completo' => $data['nombre_completo']
-                ]);
-            } else {
-                return response()->json(['success' => false]);
+                return $response->json();
             }
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Documento no encontrado'
+            ], 404);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'error' => 'Error en el servidor'
+            ], 500);
         }
     }
 }
