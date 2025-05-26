@@ -259,20 +259,21 @@
         <div id="carousel-area">
             <div id="carousel-slider" class="carousel slide" data-interval="5000">
                 <div class="carousel-inner">
-                    <div class="item active" style="background-image: url({{ asset('assets/img/fondo.jpg') }});background-size: 100% 100%;">
+                    <div class="item active" style="background-image: url({{ asset('assets/img/fondo_5.jpg') }});background-size: 100% 100%;">
                         <div class="carousel-caption">
                             <h1 class="animated-late fadeInDown">
                                 <div class="login-logo">
                                     <a href="#">
-                                        <img class="img-thumbnail" alt="logo" width="200" src="{{ asset('img/logo.jpg') }}">
+                                        <img class="img-thumbnail" alt="logo" width="500" src="{{ asset('img/logo.jpg') }}">
                                     </a>
                                 </div>
                             </h1>
-                            <h2 class="animated-late fadeInUpQuick delay-1">
+                            <h2 class="animated-late fadeInUpQuick delay-1" style="color: white;">
                                 SIRH <br>
                                 Sistema de Recursos Humanos (CONSULTA)<br>
                                 Ver.1.0
                             </h2>
+
 
                             <div class="text-center">
                                 <button id="btnMostrarFormulario" class="btn btn-primary btn-lg btn-consultar-inicial animate__animated animate__pulse animate__infinite">
@@ -297,15 +298,15 @@
             </div>
 
             <form id="formulario">
-                <div class="mb-3">                    
+                <div class="mb-3">
                     <label for="documento" class="form-label fw-bold">Número de Documento</label>
                     <input type="text" id="documento" class="form-control form-control-lg" placeholder="Ej. 83337845 o 1555478-1j" required>
                 </div>
                 <p></p>
                 <div class="mb-4 alert alert-info p-3" style="font-size: 0.85rem; line-height: 1.5; border-radius: 8px;">
-                        <i class="fa fa-info-circle me-2"></i>
-                        En el marco del comunicado MSyD/DGAA/URRHH/COM/1/2025, encontrará el número de ítem que le corresponde, por el reordenamiento en la numeración de ítems, producto del traspaso de sistema al ADP-SIGEP establecido por el Art. 5 (Planillas Salariales), incisos I y II, de la Ley N° 1451 de Transparencia en el Servicio Público.
-                    </div>
+                    <i class="fa fa-info-circle me-2"></i>
+                    En el marco del comunicado MSyD/DGAA/URRHH/COM/1/2025, encontrará el número de ítem que le corresponde, por el reordenamiento en la numeración de ítems, producto del traspaso de sistema al ADP-SIGEP establecido por el Art. 5 (Planillas Salariales), incisos I y II, de la Ley N° 1451 de Transparencia en el Servicio Público.
+                </div>
                 <div class="d-grid gap-3 text-center">
                     <button type="submit" class="btn btn-primary btn-lg py-3 mx-auto" style="font-weight: 500; width: fit-content; border-radius: 50px;">
                         <i class="fa fa-search me-2"></i> Consultar Ítem
@@ -427,7 +428,6 @@
                         background: 'white',
                         backdrop: `
                             rgba(0,0,0,0.4)
-                            url("{{ asset('img/logo.jpg') }}")
                             center left
                             no-repeat
                         `
