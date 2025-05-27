@@ -2,28 +2,31 @@
 <html lang="es">
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Consulta de Ítem - SIRH</title>
     <meta name="description" content="Consulta de número de ítem - SIRH">
     <meta name="author" content="Lic. Oswaldo Ajuacho">
 
+    <!-- Favicon -->
     <link rel="icon" type="image/ico" href="{{ asset('img/logo.jpg') }}" />
-    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+
+    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.css') }}">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" media="screen" href="{{ asset('assets/fonts/font-awesome/font-awesome.min.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <!-- SweetAlert2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" />
-
-    <!-- Google reCAPTCHA -->
+    <!-- reCAPTCHA -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <style>
@@ -37,450 +40,374 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
         }
 
-        /* Estilos para el formulario flotante */
-        .floating-form-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
+        .main-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .left-section {
+            flex: 1;
+            display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(3px);
-        }
-
-        .floating-form {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            width: 100%;
-            max-width: 500px;
-            animation: fadeInDown 0.4s;
-            position: relative;
-            border-top: 5px solid var(--secondary-color);
-        }
-
-        .close-form {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--light-text);
-            transition: all 0.3s;
-        }
-
-        .close-form:hover {
-            color: var(--accent-color);
-            transform: rotate(90deg);
-        }
-
-        .btn-consultar-inicial {
-            font-size: 18px;
-            padding: 12px 30px;
-            margin-top: 30px;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-            transition: all 0.3s ease;
-            border-radius: 50px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
-            border: none;
-        }
-
-        .btn-consultar-inicial:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
-        }
-
-        /* Estilo para la tarjeta de resultado */
-        .result-container {
-            text-align: center;
-            padding: 0;
-        }
-
-        .greeting {
-            font-size: 1.5rem;
-            color: var(--dark-text);
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-
-        .item-card {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-radius: 12px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(52, 152, 219, 0.2);
+            background-color: #ffffff;
             position: relative;
             overflow: hidden;
         }
 
-        .item-card::before {
+        .left-section::before {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--secondary-color), #2980b9);
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(41, 128, 185, 0.05) 100%);
         }
 
-        .item-label {
-            font-size: 1rem;
+        .left-section img {
+            max-width: 80%;
+            height: auto;
+            animation: fadeIn 1.2s ease-in-out;
+            z-index: 1;
+        }
+
+        .right-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f4f4f4;
+            padding: 2rem;
+        }
+
+        .form-container {
+            background: #fff;
+            border-radius: 2rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .form-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-subtitle {
             color: var(--light-text);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            display: block;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
         }
 
-        .item-value {
-            font-size: 3rem;
+        .form-control,
+        .btn {
+            border-radius: 0.75rem;
+        }
+
+        .form-control-lg {
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border: none;
+            font-weight: 600;
+            padding: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(41, 128, 185, 0.2);
+        }
+
+        .info-box {
+            background-color: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .info-text {
+            font-size: 0.85rem;
+            color: #555;
+            margin: 0;
+        }
+
+        .info-text strong {
+            color: var(--dark-text);
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: #f0f0f0;
+            color: var(--light-text);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        /* Modal estilos */
+        .modal-result-item {
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--secondary-color);
-            margin: 15px 0;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 1rem 0;
+            text-align: center;
         }
 
-        .user-name {
-            font-size: 1.4rem;
-            color: var(--dark-text);
-            margin: 20px 0;
-            padding: 15px 0;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            font-weight: 500;
+        .modal-user-name {
+            font-size: 1.2rem;
+            margin: 1.5rem 0;
+            padding: 1rem 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            text-align: center;
         }
 
-        .verification-text {
+        .modal-document-info {
             font-size: 0.9rem;
             color: var(--light-text);
-            margin-top: 20px;
-            line-height: 1.6;
+            text-align: center;
         }
 
-        .verification-icon {
-            color: #27ae60;
-            font-size: 1.2rem;
-            margin-right: 5px;
-        }
-
-        .document-info {
-            background: var(--light-bg);
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-size: 0.85rem;
-        }
-
-        /* Estilos para reCAPTCHA */
-        .g-recaptcha {
-            margin: 15px 0;
-            display: flex;
-            justify-content: center;
-        }
-
-        /* Ajustar para móviles */
-        @media (max-width: 576px) {
-            .g-recaptcha {
-                transform: scale(0.85);
-                transform-origin: left;
-            }
-        }
-
-        /* Animaciones personalizadas */
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
             }
 
-            50% {
-                transform: scale(1.05);
-            }
-
-            100% {
+            to {
+                opacity: 1;
                 transform: scale(1);
             }
         }
 
-        .pulse-animation {
-            animation: pulse 2s infinite;
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* Estilos para el input */
-        .form-control-lg {
-            border-radius: 8px;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            transition: all 0.3s;
-        }
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
 
-        .form-control-lg:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
-        }
+            .left-section {
+                display: none;
+            }
 
-        /* Estilos para SweetAlert2 */
-        .swal2-popup {
-            border-radius: 12px !important;
-            padding: 30px !important;
-            max-width: 650px !important;
-        }
-
-        .swal2-title {
-            color: var(--dark-text) !important;
-            font-weight: 600 !important;
-            font-size: 1.8rem !important;
-        }
-
-        .swal2-confirm {
-            background: linear-gradient(135deg, var(--secondary-color), #2980b9) !important;
-            border: none !important;
-            border-radius: 50px !important;
-            padding: 10px 25px !important;
-            font-weight: 500 !important;
+            .form-container {
+                padding: 1.5rem;
+                border-radius: 1.5rem;
+            }
         }
     </style>
 </head>
 
-<body id="matter-top" class="bg-light">
-    <header class="logo-menu" id="home">
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" data-spy="affix" data-offset-top="200">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">
-                        <img src="{{ asset('img/logo.jpg') }}" alt="Logo SIRH" height="40">
-                    </a>
-                </div>
-            </div>
-        </nav>
-    </header>
+<body>
 
-    <section id="slider">
-        <div id="carousel-area">
-            <div id="carousel-slider" class="carousel slide" data-interval="5000">
-                <div class="carousel-inner">
-                    <div class="item active" style="background-image: url({{ asset('assets/img/fondo_5.jpg') }});background-size: 100% 100%;">
-                        <div class="carousel-caption">
-                            <h1 class="animated-late fadeInDown">
-                                <div class="login-logo">
-                                    <a href="#">
-                                        <img class="img-thumbnail" alt="logo" width="500" src="{{ asset('img/logo.jpg') }}">
-                                    </a>
-                                </div>
-                            </h1>
-                            <h2 class="animated-late fadeInUpQuick delay-1" style="color: white;">
-                                SIRH <br>
-                                Sistema de Recursos Humanos (CONSULTA)<br>
-                                Ver.1.0
-                            </h2>
-
-
-                            <div class="text-center">
-                                <button id="btnMostrarFormulario" class="btn btn-primary btn-lg btn-consultar-inicial animate__animated animate__pulse animate__infinite">
-                                    <i class="fa fa-search"></i> Consultar Número de Ítem
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="main-container">
+        <!-- Imagen izquierda -->
+        <div class="left-section">
+            <img src="{{ asset('img/logo.jpg') }}" alt="Logo SIRH">
         </div>
-    </section>
 
-    <!-- Contenedor del formulario flotante -->
-    <div id="floatingFormContainer" class="floating-form-container">
-        <div class="floating-form">
-            <span class="close-form" id="cerrarFormulario">&times;</span>
+        <!-- Formulario derecha -->
+        <div class="right-section">
+            <div class="form-container">
+                <h3 class="form-title">CONSULTA DE ÍTEM</h3>
+                <!-- <p class="form-subtitle">Sistema Integrado de Recursos Humanos</p> -->
+                 
+                <form id="formulario">
+                    <div class="mb-3">
+                        <label for="documento" class="form-label fw-medium">Número de Documento</label>
+                        <input type="text" class="form-control form-control-lg" id="documento"
+                            placeholder="Ej. 83337845 o 1555478-1j" required>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                    </div>
 
-            <div class="text-center mb-4">
-                <img src="{{ asset('img/logo.jpg') }}" alt="Logo SIRH" width="80" class="mb-3">
-                <h4 class="card-title mb-3" style="font-weight: 600; color: var(--dark-text);">Consulta de Ítem por Documento</h4>
-            </div>
+                    <div class="info-box">
+                        <p class="info-text">
+                            <i class="fas fa-info-circle me-2" style="color: var(--secondary-color);"></i>
+                            En el marco del comunicado<strong> MSyD/DGAA/URRHH/COM/1/2025</strong>, encontrará el número de ítem que le corresponde, por el reordenamiento en la numeración de ítems, producto del traspaso de sistema al ADP-SIGEP establecido por el Art. 5 (Planillas Salariales), incisos I y II, de la <strong>Ley N° 1451 de Transparencia en el Servicio Público</strong>.
+                        </p>
+                    </div>
 
-            <form id="formulario">
-                <div class="mb-3">
-                    <label for="documento" class="form-label fw-bold">Número de Documento</label>
-                    <input type="text" id="documento" class="form-control form-control-lg" placeholder="Ej. 83337845 o 1555478-1j" required>
-                </div>
-                <p></p>
-                
-                <!-- Widget de reCAPTCHA -->
-                <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
-                
-                <div class="mb-4 alert alert-info p-3" style="font-size: 0.85rem; line-height: 1.5; border-radius: 8px;">
-                    <i class="fa fa-info-circle me-2"></i>
-                    En el marco del comunicado MSyD/DGAA/URRHH/COM/1/2025, encontrará el número de ítem que le corresponde, por el reordenamiento en la numeración de ítems, producto del traspaso de sistema al ADP-SIGEP establecido por el Art. 5 (Planillas Salariales), incisos I y II, de la Ley N° 1451 de Transparencia en el Servicio Público.
-                </div>
-                <div class="d-grid gap-3 text-center">
-                    <button type="submit" class="btn btn-primary btn-lg py-3 mx-auto" style="font-weight: 500; width: fit-content; border-radius: 50px;">
-                        <i class="fa fa-search me-2"></i> Consultar Ítem
+                    <button type="submit" class="btn btn-primary btn-lg w-100" id="btnConsultar">
+                        <i class="fas fa-search me-2"></i> Consultar Ítem
                     </button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <span class="version-badge">Versión 1.0</span>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- jQuery Load -->
-    <script src="{{ asset('assets/js/jquery-min.js') }}"></script>
+    <!-- Modal de resultado -->
+    <div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center py-4 px-5" id="modalContenido">
+                    <!-- Contenido dinámico se insertará aquí -->
+                </div>
+                <div class="modal-footer border-0 justify-content-center pb-4">
+                    <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Bootstrap JS -->
-    <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Mostrar/ocultar formulario flotante
-        document.getElementById('btnMostrarFormulario').addEventListener('click', function() {
-            document.getElementById('floatingFormContainer').style.display = 'flex';
-            document.getElementById('documento').focus();
-        });
-
-        document.getElementById('cerrarFormulario').addEventListener('click', function() {
-            document.getElementById('floatingFormContainer').style.display = 'none';
-            grecaptcha.reset(); // Resetear reCAPTCHA al cerrar
-        });
-
-        // Cerrar al hacer clic fuera del formulario
-        document.getElementById('floatingFormContainer').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-                grecaptcha.reset(); // Resetear reCAPTCHA al cerrar
-            }
-        });
-
-        // Manejo del formulario
         document.getElementById('formulario').addEventListener('submit', async function(e) {
             e.preventDefault();
+
             const documento = document.getElementById('documento').value.trim();
-            const recaptchaResponse = grecaptcha.getResponse();
-
-            if (!documento) {
-                Swal.fire({
-                    title: 'Campo requerido',
-                    text: 'Por favor ingrese un número de documento válido',
-                    icon: 'warning'
-                });
-                return;
-            }
-
-            if (!recaptchaResponse) {
-                Swal.fire({
-                    title: 'Verificación requerida',
-                    text: 'Por favor complete el reCAPTCHA para continuar',
-                    icon: 'warning'
-                });
-                return;
-            }
-
-            const btnSubmit = this.querySelector('button[type="submit"]');
+            const captchaResponse = grecaptcha.getResponse();
+            const btnSubmit = document.getElementById('btnConsultar');
             const originalBtnText = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Consultando...';
+
+            // Validaciones
+            if (!documento) {
+                showAlert('Campo requerido', 'Por favor ingrese un número de documento válido', 'warning');
+                return;
+            }
+
+            if (!captchaResponse) {
+                showAlert('Verificación requerida', 'Por favor complete el reCAPTCHA para continuar', 'warning');
+                return;
+            }
+
+            // Mostrar estado de carga
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Consultando...';
             btnSubmit.disabled = true;
 
             try {
-                // 1. Primero hacemos la petición a Laravel
                 const response = await fetch('/buscar', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
                     body: JSON.stringify({
                         documento,
-                        'g-recaptcha-response': recaptchaResponse
+                        'g-recaptcha-response': captchaResponse
                     })
                 });
 
-                // 2. Verificamos si la respuesta es OK
                 if (!response.ok) {
                     throw new Error(`Error HTTP: ${response.status}`);
                 }
 
-                // 3. Obtenemos los datos JSON
                 const data = await response.json();
 
-                // 4. Verificamos si la consulta fue exitosa
                 if (data.success) {
-                    document.getElementById('floatingFormContainer').style.display = 'none';
-                    grecaptcha.reset(); // Resetear reCAPTCHA después de éxito
-
-                    Swal.fire({
-                        html: `
-                    <div class="result-container">
-                        <div class="greeting">
-                            <i class="fa fa-hand-paper-o"></i> ¡Hola, ${data.nombre_completo}!
-                        </div>
-                        <div class="item-card">
-                            <span class="item-label">Su nuevo número de ítem es:</span>
-                            <div class="item-value pulse-animation">${data.item}</div>
-                            <div class="user-name">
-                                <i class="fa fa-user-circle-o"></i> ${data.nombre_completo}
-                            </div>
-                        </div>
-                        <div class="verification-text">
-                            <i class="fa fa-check-circle verification-icon"></i> 
-                            Documento consultado: ${documento}
-                        </div>
-                    </div>
-                `,
-                        confirmButtonText: 'Aceptar',
-                        background: 'white',
-                        width: '650px'
-                    });
+                    // Mostrar resultado en modal
+                    showResultModal(data, documento);
                 } else {
-                    grecaptcha.reset(); // Resetear reCAPTCHA después de error
-                    Swal.fire({
-                        title: data.error === 'Por favor complete el reCAPTCHA correctamente' ? 'Verificación fallida' : 'No encontrado',
-                        text: data.error || 'El documento no está registrado',
-                        icon: 'error'
-                    });
+                    const title = data.error === 'Por favor complete el reCAPTCHA correctamente' ?
+                        'Verificación fallida' :
+                        'No encontrado';
+                    const text = data.error || 'El documento no está registrado';
+                    showAlert(title, text, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                grecaptcha.reset(); // Resetear reCAPTCHA después de error
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Ocurrió un error al realizar la consulta',
-                    icon: 'error'
-                });
+                showAlert('Error', 'Ocurrió un error al realizar la consulta', 'error');
             } finally {
+                // Restaurar botón
                 btnSubmit.innerHTML = originalBtnText;
                 btnSubmit.disabled = false;
+
+                // Limpiar formulario y recaptcha
                 document.getElementById('documento').value = '';
+                grecaptcha.reset();
             }
         });
 
-        // Enfocar automáticamente el campo de documento al cargar la página
-        window.addEventListener('load', function() {
-            document.getElementById('btnMostrarFormulario').addEventListener('click', function() {
-                setTimeout(function() {
-                    document.getElementById('documento').focus();
-                }, 300);
-            });
-        });
+        // Función para mostrar alertas
+        function showAlert(title, text, icon) {
+            const modal = new bootstrap.Modal(document.getElementById('resultadoModal'));
+
+            const alertContent = `
+      <div class="alert alert-${icon === 'error' ? 'danger' : 'warning'} d-flex align-items-center" role="alert">
+        <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+        <div>
+          <h5 class="alert-heading mb-1">${title}</h5>
+          <p class="mb-0">${text}</p>
+        </div>
+      </div>
+    `;
+
+            document.getElementById('modalContenido').innerHTML = alertContent;
+            modal.show();
+        }
+
+        // Función para mostrar resultados exitosos
+        function showResultModal(data, documento) {
+            const modal = new bootstrap.Modal(document.getElementById('resultadoModal'));
+
+            const content = `
+      <div style="text-align: center;">
+        <div style="font-size: 1.5rem; margin-bottom: 15px;">
+          <i class="fas fa-hand-paper" style="color: var(--secondary-color);"></i> ¡Hola, ${data.nombre_completo}!
+        </div>
+        <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin: 20px 0;">
+          <span style="font-size: 0.9rem; color: var(--light-text); display: block; margin-bottom: 10px;">Su nuevo número de ítem es:</span>
+          <div class="modal-result-item">${data.item}</div>
+          <div class="modal-user-name">
+            <i class="fas fa-user-circle me-2"></i> ${data.nombre_completo}
+          </div>
+        </div>
+        <div class="modal-document-info">
+          <i class="fas fa-check-circle" style="color: #27ae60;"></i> 
+          Documento consultado: ${documento}
+        </div>
+      </div>
+    `;
+
+            document.getElementById('modalContenido').innerHTML = content;
+            modal.show();
+        }
     </script>
 
-    <!-- All JS plugin Triggers -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
 </body>
 
 </html>
