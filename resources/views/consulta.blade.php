@@ -135,12 +135,19 @@
             padding: 1rem;
             margin-bottom: 1.5rem;
             border-left: 4px solid var(--secondary-color);
+            text-align: justify;
+            /* Añade justificación del texto */
+            text-justify: inter-word;
+            /* Mejora el espaciado entre palabras */
         }
 
         .info-text {
             font-size: 0.85rem;
             color: #555;
             margin: 0;
+            text-align: justify;
+            /* Asegura que el texto esté justificado */
+            text-justify: inter-word;
         }
 
         .info-text strong {
@@ -244,15 +251,15 @@
                             placeholder="Ej. 83337845 o 1555478-1j" required>
                     </div>
 
-                  
+
                     <div class="info-box">
                         <p class="info-text">
                             <i class="fas fa-info-circle me-2" style="color: var(--secondary-color);"></i>
-                            En el marco del comunicado<strong> MSyD/DGAA/URRHH/COM/1/2025</strong>, encontrará el número de ítem que le corresponde, por el reordenamiento en la numeración de ítems, producto del traspaso de sistema al ADP-SIGEP establecido por el Art. 5 (Planillas Salariales), incisos I y II, de la <strong>Ley N° 1451 de Transparencia en el Servicio Público</strong>.
+                            En el marco del comunicado <strong>MSyD/DGAA/URRHH/COM/1/2025</strong>, encontrará el número de ítem que le corresponde, por el reordenamiento en la numeración de ítems, producto del traspaso de sistema al ADP-SIGEP establecido por el Art. 5 (Planillas Salariales), incisos I y II, de la <strong>Ley N° 1451 de Transparencia en el Servicio Público</strong>.
                         </p>
                     </div>
 
-                      <div class="mb-3 text-center">
+                    <div class="mb-3 text-center">
                         <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}" align='center'></div>
                     </div>
 
