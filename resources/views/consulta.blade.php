@@ -61,12 +61,6 @@
         }
 
         .left-section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
             background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(41, 128, 185, 0.05) 100%);
         }
 
@@ -234,7 +228,7 @@
     <div class="main-container">
         <!-- Imagen izquierda -->
         <div class="left-section">
-            <img src="{{ asset('img/logo.jpg') }}" alt="Logo SIRH">
+            <img src="{{ asset('img/logo.jpg') }}" alt="Logo SIRH" width="555">
         </div>
 
         <!-- Formulario derecha -->
@@ -242,23 +236,26 @@
             <div class="form-container">
                 <h3 class="form-title">CONSULTA DE ÍTEM</h3>
                 <!-- <p class="form-subtitle">Sistema Integrado de Recursos Humanos</p> -->
-                 
+
                 <form id="formulario">
                     <div class="mb-3">
-                        <label for="documento" class="form-label fw-medium">Número de Documento</label>
+                        <label for="documento" class="form-label fw-medium">Ingrese su C.I.</label>
                         <input type="text" class="form-control form-control-lg" id="documento"
                             placeholder="Ej. 83337845 o 1555478-1j" required>
                     </div>
-                    <div class="mb-3 text-center">
-                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
-                    </div>
 
+                  
                     <div class="info-box">
                         <p class="info-text">
                             <i class="fas fa-info-circle me-2" style="color: var(--secondary-color);"></i>
                             En el marco del comunicado<strong> MSyD/DGAA/URRHH/COM/1/2025</strong>, encontrará el número de ítem que le corresponde, por el reordenamiento en la numeración de ítems, producto del traspaso de sistema al ADP-SIGEP establecido por el Art. 5 (Planillas Salariales), incisos I y II, de la <strong>Ley N° 1451 de Transparencia en el Servicio Público</strong>.
                         </p>
                     </div>
+
+                      <div class="mb-3 text-center">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}" align='center'></div>
+                    </div>
+
 
                     <button type="submit" class="btn btn-primary btn-lg w-100" id="btnConsultar">
                         <i class="fas fa-search me-2"></i> Consultar Ítem
