@@ -14,7 +14,29 @@ class ConsultaController extends Controller
 
     public function buscar(Request $request)
     {
-        $request->validate(['documento' => 'required']);
+        $request->validate([
+            'documento' => 'required',
+            'g-recaptcha-response' => 'required'
+        ]);
+
+        // Validar reCAPTCHA
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+        $recaptchaSecret = env('RECAPTCHA_SECRET_KEY');
+        
+        $recaptchaVerification = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $recaptchaSecret,
+            'response' => $recaptchaResponse,
+            'remoteip' => $request->ip()
+        ]);
+
+        $recaptchaData = $recaptchaVerification->json();
+
+        if (!$recaptchaData['success']) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Por favor complete el reCAPTCHA correctamente'
+            ], 400);
+        }
 
         try {
             $response = Http::withHeaders([

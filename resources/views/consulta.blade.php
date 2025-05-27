@@ -23,6 +23,9 @@
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" />
 
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -181,6 +184,21 @@
             font-size: 0.85rem;
         }
 
+        /* Estilos para reCAPTCHA */
+        .g-recaptcha {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Ajustar para móviles */
+        @media (max-width: 576px) {
+            .g-recaptcha {
+                transform: scale(0.85);
+                transform-origin: left;
+            }
+        }
+
         /* Animaciones personalizadas */
         @keyframes pulse {
             0% {
@@ -303,6 +321,10 @@
                     <input type="text" id="documento" class="form-control form-control-lg" placeholder="Ej. 83337845 o 1555478-1j" required>
                 </div>
                 <p></p>
+                
+                <!-- Widget de reCAPTCHA -->
+                <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                
                 <div class="mb-4 alert alert-info p-3" style="font-size: 0.85rem; line-height: 1.5; border-radius: 8px;">
                     <i class="fa fa-info-circle me-2"></i>
                     En el marco del comunicado MSyD/DGAA/URRHH/COM/1/2025, encontrará el número de ítem que le corresponde, por el reordenamiento en la numeración de ítems, producto del traspaso de sistema al ADP-SIGEP establecido por el Art. 5 (Planillas Salariales), incisos I y II, de la Ley N° 1451 de Transparencia en el Servicio Público.
@@ -334,12 +356,14 @@
 
         document.getElementById('cerrarFormulario').addEventListener('click', function() {
             document.getElementById('floatingFormContainer').style.display = 'none';
+            grecaptcha.reset(); // Resetear reCAPTCHA al cerrar
         });
 
         // Cerrar al hacer clic fuera del formulario
         document.getElementById('floatingFormContainer').addEventListener('click', function(e) {
             if (e.target === this) {
                 this.style.display = 'none';
+                grecaptcha.reset(); // Resetear reCAPTCHA al cerrar
             }
         });
 
@@ -347,11 +371,21 @@
         document.getElementById('formulario').addEventListener('submit', async function(e) {
             e.preventDefault();
             const documento = document.getElementById('documento').value.trim();
+            const recaptchaResponse = grecaptcha.getResponse();
 
             if (!documento) {
                 Swal.fire({
                     title: 'Campo requerido',
                     text: 'Por favor ingrese un número de documento válido',
+                    icon: 'warning'
+                });
+                return;
+            }
+
+            if (!recaptchaResponse) {
+                Swal.fire({
+                    title: 'Verificación requerida',
+                    text: 'Por favor complete el reCAPTCHA para continuar',
                     icon: 'warning'
                 });
                 return;
@@ -371,7 +405,8 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        documento
+                        documento,
+                        'g-recaptcha-response': recaptchaResponse
                     })
                 });
 
@@ -386,6 +421,7 @@
                 // 4. Verificamos si la consulta fue exitosa
                 if (data.success) {
                     document.getElementById('floatingFormContainer').style.display = 'none';
+                    grecaptcha.reset(); // Resetear reCAPTCHA después de éxito
 
                     Swal.fire({
                         html: `
@@ -411,14 +447,16 @@
                         width: '650px'
                     });
                 } else {
+                    grecaptcha.reset(); // Resetear reCAPTCHA después de error
                     Swal.fire({
-                        title: 'No encontrado',
+                        title: data.error === 'Por favor complete el reCAPTCHA correctamente' ? 'Verificación fallida' : 'No encontrado',
                         text: data.error || 'El documento no está registrado',
                         icon: 'error'
                     });
                 }
             } catch (error) {
                 console.error('Error:', error);
+                grecaptcha.reset(); // Resetear reCAPTCHA después de error
                 Swal.fire({
                     title: 'Error',
                     text: 'Ocurrió un error al realizar la consulta',
